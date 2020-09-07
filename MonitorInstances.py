@@ -33,7 +33,7 @@ while True:
     print("*******************************")
     time.sleep(1)
     # print(type(CPU_Pct))
-    payload = "{ip}, {CPU_Pct}".format(ip=ip, CPU_Pct=CPU_Pct)
+    '''payload = "{ip}, {CPU_Pct}".format(ip=ip, CPU_Pct=CPU_Pct)
     r = requests.post('http://192.168.1.197:9999/Instances', data=payload)
     # print("<Response [{a}]>".format(a=r.status_code))
-    print("<Response [{status_code}] {reason}>".format(status_code=r.status_code, reason=r.reason))
+    print("<Response [{status_code}] {reason}>".format(status_code=r.status_code, reason=r.reason))'''
