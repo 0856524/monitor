@@ -55,6 +55,7 @@ while True:
     server_port = 9999
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((server_host, server_port))
-    client.send("ip:"+ip+" cpu_pct:"+ str(CPU_Pct))
+    message = "ip:"+ip+" cpu_pct:"+ str(CPU_Pct)
+    client.send(message.encode())
     response = client.recv(4096)
     print(response.decode())
