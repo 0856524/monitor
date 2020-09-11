@@ -5,7 +5,7 @@ from subprocess import check_output
 import socket
 
 ips = check_output(['hostname', '--all-ip-addresses'])
-ip = str(ips)
+ip = str(ips.decode())
 #ip = ip[2:-4]
 ip = ip.split(' ')[0]
 #print(len(ip))
