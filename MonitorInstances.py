@@ -3,6 +3,7 @@ import time
 from subprocess import check_output
 from subprocess import check_output
 import socket
+import requests
 
 ips = check_output(['hostname', '--all-ip-addresses'])
 ip = str(ips.decode())
@@ -11,6 +12,8 @@ ip = ip.split(' ')[0]
 #print(len(ip))
 print("Instances's IP: " + ip)
 
+
+init_flag = 0
 while True:
     CPU_Pctn = os.popen("""top -b -n2 | grep "Cpu(s)" | awk '{print $2+$4}' | tail -n1""").readline()
     CPU_Pct = CPU_Pctn.split('\n')[0]
@@ -21,8 +24,6 @@ while True:
     get_mem = mem.split()
     Total_mem = get_mem[8]
     Used_mem = get_mem[9]
-    print(int(Used_mem))
-    print(int(Total_mem))
     mem_Pct = (float(Used_mem)/float(Total_mem))*100
     mem_Pct = round(mem_Pct, 2)
     print("*******************************")
@@ -47,3 +48,17 @@ while True:
     client.send(message.encode())
     response = client.recv(4096)
     print(response.decode())
+    
+    floating_ip = response.decode().split('/')[1]
+    print('floating IP = '+floating_ip)
+    url = 'http://'+floating_ip+':8080/webpage'
+    if init_flag == 0:
+        r = requests.get(url)
+        if r.status_code == requests.codes.ok:
+            init_flag = 1
+            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=2" --data "@./om2m-init/data_app.xml" http://'+floating_ip+':8080/~/in-cse'
+            os.system(cmd)
+            time.sleep(1)
+            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=3" --data "@./om2m-init/data_container.xml" http://'+floating_ip+':8080/~/in-cse/MY_SENSOR'
+            os.system(cmd)
+    
