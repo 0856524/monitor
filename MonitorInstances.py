@@ -56,9 +56,10 @@ while True:
         r = requests.get(url)
         if r.status_code == requests.codes.ok:
             init_flag = 1
-            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=2" --data "@./om2m-init/data_app.xml" http://'+floating_ip+':8080/~/in-cse'
+
+            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=2" --data "@./data_app.xml" http://'+floating_ip+':8080/~/in-cse'
             os.system(cmd)
             time.sleep(1)
-            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=3" --data "@./om2m-init/data_container.xml" http://'+floating_ip+':8080/~/in-cse/in-name/MY_SENSOR'
+            cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=3" --data "@./data_container.xml" http://'+floating_ip+':8080/~/in-cse/in-name/MY_SENSOR'
             os.system(cmd)
     
