@@ -4,6 +4,7 @@ from subprocess import check_output
 from subprocess import check_output
 import socket
 import requests
+import logging
 
 ips = check_output(['hostname', '--all-ip-addresses'])
 ip = str(ips.decode())
@@ -51,7 +52,10 @@ while True:
     
     floating_ip = response.decode().split('/')[1]
     print('floating IP = '+floating_ip)
+    
     url = 'http://'+floating_ip+':8080/webpage'
+    logging.info(url)
+    logging.info('init flag: '+init_flag)
     if init_flag == 0:
         r = requests.get(url)
         if r.status_code == requests.codes.ok:
