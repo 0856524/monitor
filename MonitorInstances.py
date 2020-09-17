@@ -55,7 +55,7 @@ while True:
     
     url = 'http://'+floating_ip+':8080/webpage'
     logging.info(url)
-    logging.info('init flag: '+init_flag)
+    logging.info('init flag: '+str(init_flag))
     if init_flag == 0:
         r = requests.get(url)
         if r.status_code == requests.codes.ok:
