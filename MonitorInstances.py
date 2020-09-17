@@ -51,13 +51,13 @@ while True:
     print(response.decode())
     
     floating_ip = response.decode().split('/')[1]
-    print('floating IP = '+floating_ip)
+    timer = response.decode().split('/')[2]
+    #print('floating IP = '+floating_ip)
     
     url = 'http://'+floating_ip+':8080/webpage'
-    logging.info(url)
-    logging.info('init flag: '+str(init_flag))
-    if init_flag == 0:
+    if init_flag == 0 and float(timer)>=80:
         r = requests.get(url)
+        print(r.status_code)
         if r.status_code == requests.codes.ok:
             init_flag = 1
 
