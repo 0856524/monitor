@@ -55,7 +55,7 @@ while True:
     status = response.decode().split('/')[3]
     #print('floating IP = '+floating_ip)
     
-    url = 'http://172.24.4.97:8080/webpage'
+    url = 'http://'+floating_ip+':8080/webpage'
     if init_flag == 0:# and status=='ACTIVE':
         r = requests.get(url)
         print(r.status_code)
