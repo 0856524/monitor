@@ -15,6 +15,7 @@ print("Instances's IP: " + ip)
 
 
 init_flag = 0
+start_time = time.time()
 while True:
     CPU_Pctn = os.popen("""top -b -n2 | grep "Cpu(s)" | awk '{print $2+$4}' | tail -n1""").readline()
     CPU_Pct = CPU_Pctn.split('\n')[0]
@@ -51,17 +52,14 @@ while True:
     print(response.decode())
     
     floating_ip = response.decode().split('/')[1]
-    timer = response.decode().split('/')[2]
-    status = response.decode().split('/')[3]
     #print('floating IP = '+floating_ip)
     
     url = 'http://'+floating_ip+':8080/webpage'
-    if init_flag == 0:# and status=='ACTIVE':
+    if init_flag == 0 and (time.time()-start_time)>=80:
         r = requests.get(url)
         print(r.status_code)
-        init_flag = 1
-        #if r.status_code == requests.codes.ok:
-        #    init_flag = 1
+        if r.status_code == requests.codes.ok:
+            init_flag = 1
 
             cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=2" --data "@./data_app.xml" http://'+floating_ip+':8080/~/in-cse'
             os.system(cmd)
