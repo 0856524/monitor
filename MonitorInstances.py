@@ -55,12 +55,13 @@ while True:
     status = response.decode().split('/')[3]
     #print('floating IP = '+floating_ip)
     
-    url = 'http://'+floating_ip+':8080/webpage'
-    if init_flag == 0 and status=='ACTIVE':
+    url = 'http://172.24.4.97:8080/webpage'
+    if init_flag == 0:# and status=='ACTIVE':
         r = requests.get(url)
         print(r.status_code)
-        if r.status_code == requests.codes.ok:
-            init_flag = 1
+        init_flag = 1
+        #if r.status_code == requests.codes.ok:
+        #    init_flag = 1
 
             cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=2" --data "@./data_app.xml" http://'+floating_ip+':8080/~/in-cse'
             os.system(cmd)
