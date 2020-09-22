@@ -51,7 +51,7 @@ while True:
     response = client.recv(4096)
     print(response.decode())
     
-    floating_ip = response.decode().split('/')[1]
+    '''floating_ip = response.decode().split('/')[1]
     #print('floating IP = '+floating_ip)
     
     url = 'http://'+floating_ip+':8080/webpage'
@@ -65,5 +65,5 @@ while True:
             os.system(cmd)
             time.sleep(1)
             cmd = 'curl -X POST -H "X-M2M-Origin : admin:admin" -H "Content-Type: application/xml;ty=3" --data "@./data_container.xml" http://'+floating_ip+':8080/~/in-cse/in-name/MY_SENSOR'
-            os.system(cmd)
+            os.system(cmd)'''
     
