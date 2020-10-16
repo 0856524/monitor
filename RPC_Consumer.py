@@ -8,10 +8,10 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 result = sock.connect_ex(('127.0.0.1',8080))
 while True:
     if result == 0:
-       print("Port is open")
+       #print("Port is open")
        break
     else:
-       print("Port is not open")
+       #print("Port is not open")
 
 credentials = pika.PlainCredentials("admin","0000")
 #connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.24.4.184',credentials=credentials))
