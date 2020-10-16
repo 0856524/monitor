@@ -15,7 +15,7 @@ while True:
 
 credentials = pika.PlainCredentials("admin","0000")
 #connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.24.4.184',credentials=credentials))
-connection = pika.BlockingConnection(pika.ConnectionParameters('172.24.4.184', 5672, '/', credentials))
+connection = pika.BlockingConnection(pika.ConnectionParameters('172.24.4.100', 5672, '/', credentials))
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 
