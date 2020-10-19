@@ -15,7 +15,7 @@ while result != 0:
     #else:
         #print("Port is not open")
         #continue
-
+time.sleep(10)
 
 credentials = pika.PlainCredentials("admin","0000")
 #connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.24.4.184',credentials=credentials))
