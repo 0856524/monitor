@@ -15,7 +15,6 @@ print("Instances's IP: " + ip)
 
 
 init_flag = 0
-start_time = time.time()
 while True:
 
     CPU_Pct = psutil.cpu_percent()
@@ -42,4 +41,15 @@ while True:
     response = client.recv(4096)
     print(response.decode())
     
-    
+    if init_flag == 0:
+        count_str = response.decode().split('/')[1]
+        server_host2 = "127.0.0.1"
+        server_port2 = 8888
+        client2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client2.connect((server_host2, server_port2))
+        message = "No." + count_str
+        client2.send(message.encode())
+        response = client2.recv(4096)
+        print(response.decode())
+        init_flag = 1
+

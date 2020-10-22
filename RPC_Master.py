@@ -1,5 +1,6 @@
 import pika
 import uuid
+from flask import Flask, request
 import requests, random
 import json
 import time
@@ -47,31 +48,18 @@ class RpcClient(object):
 
 
 
-credentials = pika.PlainCredentials("admin","0000")
-#connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.24.4.184',credentials=credentials))
-connection = pika.BlockingConnection(pika.ConnectionParameters('172.24.4.100', 5672, '/', credentials))
-channel = connection.channel()
-channel.queue_declare(queue='rpc_queue')
+loadbalancer = Flask(__name__)
+#rpc = RpcClient()
 
-
-def forward_traffic(request_data):
+@loadbalancer.route('/', methods=['POST','GET'])
+def handler():
     rpc = RpcClient()
     print(" [x] Requesting")
-    response = rpc.call(request_data)
-    return str(response.status_code)
+    response = rpc.call(request.data)
+    #print(" [.] Got %r" % response)
+    #print(" [.] Got %r" % request.data)
 
-def on_request(ch, method, props, body):
-    #request = json.loads(body.decode())
-    response = forward_traffic(body)#request)
+    return request.data
 
-    ch.basic_publish(exchange='',
-                     routing_key=props.reply_to,
-                     properties=pika.BasicProperties(correlation_id = \
-                                                     props.correlation_id),
-                     body=str(response))
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-
-channel.basic_qos(prefetch_count=10)
-channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
-print(" [x] Awaiting RPC requests from Master Load Balancer")
-channel.start_consuming()
+if __name__ == '__main__':
+    loadbalancer.run(host="0.0.0.0")

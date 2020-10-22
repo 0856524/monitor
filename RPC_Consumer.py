@@ -5,6 +5,34 @@ import requests
 import socket
 import time
 
+bind_port = 8888
+bind_ip = "0.0.0.0"
+max_ins = 3
+lb_ip = '172.24.2.'
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((bind_ip, bind_port))
+server.listen(100)
+print("Listening on {ip}:{port}".format(ip=bind_ip, port=bind_port))
+
+while True:
+    #while self.print_info_flag == 1:
+    #    pass    
+    #self.print_info_flag = 1
+    client, addr = server.accept()
+    #print(" ++ Accepted connection from: {ip}:{port}".format(ip=addr[0].decode(), port=addr[1]))
+    request = client.recv(1024)
+    ins_no = request.decode().split('.')[1]
+    message = 'ACK.'
+    client.send(message.encode())
+    client.close()
+    server.close()
+    break
+    
+print(ins_no)
+lb_ip = lb_ip + str(200+((ins_no-1)/3)+1)
+
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 result = sock.connect_ex(('127.0.0.1',8080))
 while result != 0:
@@ -19,7 +47,7 @@ time.sleep(10)
 
 credentials = pika.PlainCredentials("admin","0000")
 #connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.24.4.184',credentials=credentials))
-connection = pika.BlockingConnection(pika.ConnectionParameters('172.24.4.100', 5672, '/', credentials))
+connection = pika.BlockingConnection(pika.ConnectionParameters(lb_ip, 5672, '/', credentials))
 channel = connection.channel()
 channel.queue_declare(queue='rpc_queue')
 
