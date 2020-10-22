@@ -8,7 +8,7 @@ import time
 bind_port = 8888
 bind_ip = "0.0.0.0"
 max_ins = 3
-lb_ip = '172.24.2.'
+lb_ip = '172.24.4.'
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((bind_ip, bind_port))
@@ -30,7 +30,7 @@ while True:
     break
     
 print(ins_no)
-lb_ip = lb_ip + str(200+((ins_no-1)/3)+1)
+lb_ip = lb_ip + str(int(200+((ins_no-1)/max_ins)+1))
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
