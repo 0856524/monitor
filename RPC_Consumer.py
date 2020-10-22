@@ -30,7 +30,7 @@ while True:
     break
     
 print(ins_no)
-lb_ip = lb_ip + str(int(200+((ins_no-1)/max_ins)+1))
+lb_ip = lb_ip + str(int(200+((int(ins_no)-1)/max_ins)+1))
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
