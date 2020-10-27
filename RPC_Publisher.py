@@ -108,7 +108,7 @@ class Consumer(threading.Thread):
 @loadbalancer.route('/', methods=['POST','GET'])
 def handler():
     rpc = RpcClient()
-    print(" [x] Requesting")
+    ##print(" [x] Requesting")
     response = rpc.call(request.data)
     #print(" [.] Got %r" % response)
     #print(" [.] Got %r" % request.data)
