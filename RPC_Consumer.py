@@ -10,7 +10,7 @@ bind_ip = "0.0.0.0"
 max_ins = 3
 lb_ip = '172.24.4.'
 
-'''server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((bind_ip, bind_port))
 server.listen(100)
 print("Listening on {ip}:{port}".format(ip=bind_ip, port=bind_port))
@@ -27,9 +27,8 @@ while True:
     client.send(message.encode())
     client.close()
     server.close()
-    break'''
+    break
     
-ins_no = 1
 print(ins_no)
 lb_ip = lb_ip + str(int(200+((int(ins_no)-1)/max_ins)+1))
 
