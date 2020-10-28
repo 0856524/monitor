@@ -62,7 +62,7 @@ class Consumer(threading.Thread):
         _channel = _connection.channel()
         _channel.queue_declare(queue='rpc_queue')
         
-        _channel.basic_qos(prefetch_count=10)
+        _channel.basic_qos(prefetch_count=100)
         _channel.basic_consume(queue='rpc_queue', on_message_callback=self.on_request)
         print(" [x] Awaiting RPC requests from Master Load Balancer")
         _channel.start_consuming()

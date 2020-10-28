@@ -70,7 +70,7 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
-channel.basic_qos(prefetch_count=10)
+channel.basic_qos(prefetch_count=100)
 channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
 print(" [x] Awaiting RPC requests")
 channel.start_consuming()
