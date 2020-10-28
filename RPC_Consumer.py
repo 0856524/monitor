@@ -4,8 +4,9 @@ import random
 import requests
 import socket
 import time
+import sys
 
-bind_port = 8888
+'''bind_port = 8888
 bind_ip = "0.0.0.0"
 max_ins = 3
 lb_ip = '172.24.4.'
@@ -30,8 +31,10 @@ while True:
     break
     
 print(ins_no)
-lb_ip = lb_ip + str(int(200+((int(ins_no)-1)/max_ins)+1))
+lb_ip = lb_ip + str(int(200+((int(ins_no)-1)/max_ins)+1))'''
 
+max_ins = 3
+lb_ip = '172.24.4.' + str(int(200+((int(sys.argv[1])-1)/max_ins)+1))
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 result = sock.connect_ex(('127.0.0.1',8080))
@@ -43,6 +46,7 @@ while result != 0:
     #else:
         #print("Port is not open")
         #continue
+print("Port is open")
 time.sleep(10)
 
 credentials = pika.PlainCredentials("admin","0000")
