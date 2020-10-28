@@ -41,7 +41,7 @@ while True:
     response = client.recv(4096)
     print(response.decode())
     
-    if init_flag == 0:
+    '''if init_flag == 0:
         count_str = response.decode().split('/')[1]
         server_host2 = "127.0.0.1"
         server_port2 = 8888
@@ -51,5 +51,5 @@ while True:
         client2.send(message.encode())
         response = client2.recv(4096)
         print(response.decode())
-        init_flag = 1
+        init_flag = 1'''
 
