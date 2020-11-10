@@ -1,65 +1,60 @@
-import pika
-import uuid
 from flask import Flask, request
-import requests, random
+import requests
 import json
-import time
-
-class RpcClient(object):
-
-    def __init__(self):
-        self.credentials = pika.PlainCredentials("admin","0000")
-        #self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',credentials=self.credentials))
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', 5672, '/', self.credentials, heartbeat=0))
-
-        self.channel = self.connection.channel()
-
-        result = self.channel.queue_declare(queue='', exclusive=True)
-        self.callback_queue = result.method.queue
-
-        self.channel.basic_consume(queue=self.callback_queue,
-                                   on_message_callback=self.on_response,
-                                   auto_ack=True)
+import os
 
 
-    def on_response(self, ch, method, props, body):
-        if self.corr_id == props.correlation_id:
-            self.response = body
-
-    def call(self, data):
-        #data = r.data
-        #print('Enter call')
-        '''if self.connection and not self.connection.is_closed:
-            self.connection.close()
-        if self.connection.is_closed:
-            self.reconnect()'''
-        while data :
-            self.response = None
-            self.corr_id = str(uuid.uuid4())
-            self.channel.basic_publish(exchange='',
-                                       routing_key='rpc_queue',
-                                       properties=pika.BasicProperties(reply_to=self.callback_queue,
-                                                                       correlation_id=self.corr_id,
-                                                                       ),
-                                       body=data)
-            while self.response is None:
-                self.connection.process_data_events()
-            return self.response
-
-
+ns_num = 0
+il_status = 0
+path_conf = './default.conf'
+path_new_conf = './default_tmp.conf'
+              
 
 loadbalancer = Flask(__name__)
-#rpc = RpcClient()
-
 @loadbalancer.route('/', methods=['POST','GET'])
 def handler():
-    rpc = RpcClient()
-    #print(" [x] Requesting")
-    response = rpc.call(request.data)
-    #print(" [.] Got %r" % response)
-    #print(" [.] Got %r" % request.data)
+    global ns_num
+    global il_status
+    global path_conf
+    global path_new_conf
 
+    # Get information from master node
+    print(" [x] Requesting")
+    get_data = request.data.decode()
+    get_ns_num = int(json.loads(get_data)['ns_num'])
+    get_il_status_num = int(json.loads(get_data)['il_status_num'])
+    get_il_max = int(json.loads(get_data)['il_max'])
+    #print(str(get_ns_num))
+    #print(str(get_il_status))
+    
+    # If status change
+    if ns_num!=get_ns_num or il_status!=get_il_status_num:
+        # Modify and create the new default
+        fpr = open(path_conf, "r")
+        fpw = open(path_new_conf, "w")
+        line = fpr.readline()
+        while line:
+            if 'server 172.24.4.201:5000' in line:
+                for cnt in range(get_ns_num):
+                    if cnt+1 == get_ns_num:
+                        line = '    server 172.24.4.20' + str(cnt+1) + ':5000 weight=' + str(get_il_status_num) + ';\n'
+                    else:
+                        line = '    server 172.24.4.20' + str(cnt+1) + ':5000 weight=' + str(get_il_max) + ';\n'
+                    fpw.writelines(line)
+                line = fpr.readline()
+            elif 'server 172.24.4.2' in line:
+                line = fpr.readline()
+            else:
+                fpw.writelines(line)
+                line = fpr.readline()
+        ns_num = get_ns_num
+        il_status = get_il_status_num
+        fpw.close()
+        r = os.popen("rm /etc/nginx/conf.d/default.conf").readlines()
+        r = os.popen("mv " + path_new_conf + " /etc/nginx/conf.d/default.conf").readlines()
+        r = os.popen("/etc/init.d/nginx reload").readlines()  
+        
     return request.data
 
 if __name__ == '__main__':
-    loadbalancer.run(host="0.0.0.0")
+    loadbalancer.run(host="0.0.0.0", port=8989)
