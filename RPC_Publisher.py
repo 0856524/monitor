@@ -4,13 +4,6 @@ from flask import Flask, request
 import requests, random
 import json
 import time
-import socket
-
-target_host = "192.168.1.134"
-target_port = 3434
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((target_host, target_port))
-
 
 class RpcClient(object):
 
@@ -67,12 +60,6 @@ def handler():
     response = rpc.call(request.data)
     #print(" [.] Got %r" % response)
     #print(" [.] Got %r" % request.data)
-    
-    if response != None:
-        total_time = time.time() - start_time
-        client.send(total_time)
-        response_ = client.recv(4096)
-
     return request.data
 
 if __name__ == '__main__':
