@@ -7,7 +7,7 @@ import time
 import socket
 
 target_host = "192.168.1.134"
-tartget_port = 3434
+target_port = 3434
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((target_host, target_port))
 
