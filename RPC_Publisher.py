@@ -53,10 +53,8 @@ loadbalancer = Flask(__name__)
 
 @loadbalancer.route('/', methods=['POST','GET'])
 def handler():
-    start_time = time.time()
     rpc = RpcClient()
     #print(" [x] Requesting")
-    response = None
     response = rpc.call(request.data)
     #print(" [.] Got %r" % response)
     #print(" [.] Got %r" % request.data)

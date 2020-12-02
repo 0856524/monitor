@@ -24,6 +24,8 @@ def handler():
     get_ns_num = int(json.loads(get_data)['ns_num'])
     get_il_status_num = int(json.loads(get_data)['il_status_num'])
     get_il_max = int(json.loads(get_data)['il_max'])
+    get_delete_flag = int(json.loads(get_data)['delete_flag'])
+    get_delete_fip = json.loads(get_data)['delete_fip']
     #print(str(get_ns_num))
     #print(str(get_il_status))
     
@@ -52,7 +54,13 @@ def handler():
         fpw.close()
         r = os.popen("rm /etc/nginx/conf.d/default.conf").readlines()
         r = os.popen("mv " + path_new_conf + " /etc/nginx/conf.d/default.conf").readlines()
-        r = os.popen("/etc/init.d/nginx reload").readlines()  
+        r = os.popen("/etc/init.d/nginx reload").readlines()      
+    
+    # If system doing scale-in action
+    if get_delete_flag == 1:
+        cmd = "./triggle_delete.sh " + get_delete_fip
+        r = os.popen(cmd).readlines()
+        
         
     return request.data
 
