@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh -i cloud.key ubuntu@$1 "./delete.sh && exit"
+sudo ssh -i cloud.key ubuntu@$1 "/home/ubuntu/monitor/monitor-instance/delete.sh && exit"
