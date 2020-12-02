@@ -33,18 +33,17 @@ class RpcClient(object):
             self.connection.close()
         if self.connection.is_closed:
             self.reconnect()'''
-        while data :
-            self.response = None
-            self.corr_id = str(uuid.uuid4())
-            self.channel.basic_publish(exchange='',
-                                       routing_key='rpc_queue',
-                                       properties=pika.BasicProperties(reply_to=self.callback_queue,
-                                                                       correlation_id=self.corr_id,
-                                                                       ),
-                                       body=data)
-            while self.response is None:
-                self.connection.process_data_events()
-            return self.response
+        self.response = None
+        self.corr_id = str(uuid.uuid4())
+        self.channel.basic_publish(exchange='',
+                                   routing_key='rpc_queue',
+                                   properties=pika.BasicProperties(reply_to=self.callback_queue,
+                                                                   correlation_id=self.corr_id,
+                                                                   ),
+                                   body=data)
+        while self.response is None:
+            self.connection.process_data_events()
+        return str(self.response)
 
 
 
@@ -58,7 +57,7 @@ def handler():
     response = rpc.call(request.data)
     #print(" [.] Got %r" % response)
     #print(" [.] Got %r" % request.data)
-    return request.data
+    return response
 
 if __name__ == '__main__':
     loadbalancer.run(host="0.0.0.0")
