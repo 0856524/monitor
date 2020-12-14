@@ -6,8 +6,8 @@ import os
 
 ns_num = 0
 il_status = 0
-path_conf = './default.conf'
-path_new_conf = './default_tmp.conf'
+path_conf = './default_low.conf'
+path_new_conf = './default_low_tmp.conf'
               
 
 loadbalancer = Flask(__name__)
@@ -24,8 +24,6 @@ def handler():
     get_ns_num = int(json.loads(get_data)['ns_num'])
     get_il_status_num = int(json.loads(get_data)['il_status_num'])
     get_il_max = int(json.loads(get_data)['il_max'])
-    get_delete_flag = int(json.loads(get_data)['delete_flag'])
-    get_delete_fip = json.loads(get_data)['delete_fip']
     #print(str(get_ns_num))
     #print(str(get_il_status))
     
@@ -39,9 +37,9 @@ def handler():
             if 'server 172.24.4.201:5000' in line:
                 for cnt in range(get_ns_num):
                     if cnt+1 == get_ns_num:
-                        line = '    server 172.24.4.20' + str(cnt+1) + ':5000 weight=' + str(get_il_status_num) + ';\n'
+                        line = '    server 172.24.4.' + str(cnt+1+200) + ':5000 weight=' + str(get_il_status_num) + ';\n'
                     else:
-                        line = '    server 172.24.4.20' + str(cnt+1) + ':5000 weight=' + str(get_il_max) + ';\n'
+                        line = '    server 172.24.4.' + str(cnt+1+200) + ':5000 weight=' + str(get_il_max) + ';\n'
                     fpw.writelines(line)
                 line = fpr.readline()
             elif 'server 172.24.4.2' in line:
@@ -52,15 +50,10 @@ def handler():
         ns_num = get_ns_num
         il_status = get_il_status_num
         fpw.close()
-        r = os.popen("rm /etc/nginx/conf.d/default.conf").readlines()
-        r = os.popen("mv " + path_new_conf + " /etc/nginx/conf.d/default.conf").readlines()
+        r = os.popen("rm /etc/nginx/conf.d/default_low.conf").readlines()
+        r = os.popen("mv " + path_new_conf + " /etc/nginx/conf.d/default_low.conf").readlines()
         r = os.popen("/etc/init.d/nginx reload").readlines()      
     
-    # If system doing scale-in action
-    if get_delete_flag == 1:
-        cmd = "./triggle_delete.sh " + get_delete_fip
-        r = os.popen(cmd).readlines()
-        
         
     return request.data
 
