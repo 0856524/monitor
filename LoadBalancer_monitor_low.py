@@ -34,15 +34,15 @@ def handler():
         fpw = open(path_new_conf, "w")
         line = fpr.readline()
         while line:
-            if 'server 172.24.4.201:5000' in line:
+            if 'server 172.24.4.101:5000' in line:
                 for cnt in range(get_ns_num):
                     if cnt+1 == get_ns_num:
-                        line = '    server 172.24.4.' + str(cnt+1+200) + ':5000 weight=' + str(get_il_status_num) + ';\n'
+                        line = '    server 172.24.4.' + str(cnt+1+100) + ':5000 weight=' + str(get_il_status_num) + ';\n'
                     else:
-                        line = '    server 172.24.4.' + str(cnt+1+200) + ':5000 weight=' + str(get_il_max) + ';\n'
+                        line = '    server 172.24.4.' + str(cnt+1+100) + ':5000 weight=' + str(get_il_max) + ';\n'
                     fpw.writelines(line)
                 line = fpr.readline()
-            elif 'server 172.24.4.2' in line:
+            elif 'server 172.24.4.1' in line:
                 line = fpr.readline()
             else:
                 fpw.writelines(line)
