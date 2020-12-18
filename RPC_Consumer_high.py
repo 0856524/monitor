@@ -33,7 +33,7 @@ while True:
 print(ins_no)
 lb_ip = lb_ip + str(int(200+((int(ins_no)-1)/max_ins)+1))'''
 
-lb_ip = '172.24.4.' + str(int(600+int(sys.argv[1])))
+lb_ip = '172.24.4.' + str(int(200+int(sys.argv[1])))
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 result = sock.connect_ex(('127.0.0.1',8080))
@@ -73,7 +73,7 @@ def on_request(ch, method, props, body):
                      body=str(response))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
-channel.basic_qos(prefetch_count=5)
+channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
 print(" [x] Awaiting RPC requests")
 channel.start_consuming()
